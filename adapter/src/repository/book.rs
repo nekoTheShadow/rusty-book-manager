@@ -1,12 +1,14 @@
 use crate::database::{model::book::BookRow, ConnectionPool};
-use anyhow::Result;
 use async_trait::async_trait;
 use derive_new::new;
 use kernel::{
-    model::book::{event::CreateBook, Book},
+    model::{
+        book::{event::CreateBook, Book},
+        id::BookId,
+    },
     repository::book::BookRepository,
 };
-use uuid::Uuid;
+use shared::error::{AppError, AppResult};
 
 #[derive(new)]
 pub struct BookRepositoryImpl {
@@ -15,7 +17,7 @@ pub struct BookRepositoryImpl {
 
 #[async_trait]
 impl BookRepository for BookRepositoryImpl {
-    async fn create(&self, event: CreateBook) -> Result<()> {
+    async fn create(&self, event: CreateBook) -> AppResult<()> {
         sqlx::query!(
             r#"
             INSERT INTO books (title, author, isbn, description)
@@ -27,10 +29,11 @@ impl BookRepository for BookRepositoryImpl {
             event.description
         )
         .execute(self.db.inner_ref())
-        .await?;
+        .await
+        .map_err(AppError::SpecificOperationError)?;
         Ok(())
     }
-    async fn find_all(&self) -> Result<Vec<Book>> {
+    async fn find_all(&self) -> AppResult<Vec<Book>> {
         let rows = sqlx::query_as!(
             BookRow,
             r#"SELECT book_id, title, author, isbn, description
@@ -38,17 +41,19 @@ impl BookRepository for BookRepositoryImpl {
                ORDER BY created_at DESC"#
         )
         .fetch_all(self.db.inner_ref())
-        .await?;
+        .await
+        .map_err(AppError::SpecificOperationError)?;
         Ok(rows.into_iter().map(Book::from).collect())
     }
-    async fn find_by_id(&self, book_id: Uuid) -> Result<Option<Book>> {
+    async fn find_by_id(&self, book_id: BookId) -> AppResult<Option<Book>> {
         let row = sqlx::query_as!(
             BookRow,
             r#"SELECT book_id, title, author, isbn, description FROM books WHERE book_id = $1"#,
-            book_id
+            book_id as _
         )
         .fetch_optional(self.db.inner_ref())
-        .await?;
+        .await
+        .map_err(AppError::SpecificOperationError)?;
         Ok(row.map(Book::from))
     }
 }
@@ -58,7 +63,7 @@ mod tests {
     use super::*;
 
     #[sqlx::test]
-    async fn test_register_book(pool: sqlx::PgPool) -> anyhow::Result<()> {
+    async fn test_register_book(pool: sqlx::PgPool) -> AppResult<()> {
         let repo = BookRepositoryImpl::new(ConnectionPool::new(pool));
         let book = CreateBook {
             title: "Test Title".into(),
