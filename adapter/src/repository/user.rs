@@ -1,5 +1,3 @@
-
-
 use crate::database::{model::user::UserRow, ConnectionPool};
 use async_trait::async_trait;
 use derive_new::new;
@@ -11,7 +9,6 @@ use kernel::model::user::{
 };
 use kernel::repository::user::UserRepository;
 use shared::error::{AppError, AppResult};
-
 
 #[derive(new)]
 pub struct UserRepositoryImpl {
