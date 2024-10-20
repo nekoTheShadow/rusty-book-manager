@@ -1,4 +1,7 @@
-use shared::{config::DatabaseConfig, error::{AppError, AppResult}};
+use shared::{
+    config::DatabaseConfig,
+    error::{AppError, AppResult},
+};
 use sqlx::{postgres::PgConnectOptions, PgPool};
 
 pub mod model;
