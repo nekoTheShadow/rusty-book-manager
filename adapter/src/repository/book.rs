@@ -180,7 +180,6 @@ mod tests {
             .execute(&pool)
             .await?;
         let user_repo = UserRepositoryImpl::new(ConnectionPool::new(pool.clone()));
-        let repo = BookRepositoryImpl::new(ConnectionPool::new(pool.clone()));
         let user = user_repo
             .create(CreateUser {
                 name: "Test User".into(),
@@ -188,12 +187,6 @@ mod tests {
                 password: "test_password".into(),
             })
             .await?;
-        let book = CreateBook {
-            title: "Test Title".into(),
-            author: "Test Author".into(),
-            isbn: "Test ISBN".into(),
-            description: "Test Description".into(),
-        };
 
         let repo = BookRepositoryImpl::new(ConnectionPool::new(pool));
         let book = CreateBook {

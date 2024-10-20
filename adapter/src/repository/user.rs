@@ -1,4 +1,4 @@
-use core::hash;
+
 
 use crate::database::{model::user::UserRow, ConnectionPool};
 use async_trait::async_trait;
@@ -11,7 +11,7 @@ use kernel::model::user::{
 };
 use kernel::repository::user::UserRepository;
 use shared::error::{AppError, AppResult};
-use sqlx::types::uuid::Bytes;
+
 
 #[derive(new)]
 pub struct UserRepositoryImpl {
