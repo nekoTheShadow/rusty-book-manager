@@ -59,7 +59,6 @@ async fn show_book_list_with_query_200(
     });
 
     let app: axum::Router = make_router(fixture);
-    
 
     let req = Request::get(&v1(path)).bearer().body(Body::empty())?;
     let resp = app.oneshot(req).await?;
