@@ -34,6 +34,7 @@ pub async fn show_book_list(
     Query(query): Query<BookListQuery>,
     State(registry): State<AppRegistry>,
 ) -> AppResult<Json<PaginatedBookResponse>> {
+    query.validate(&())?;
     registry
         .book_repository()
         .find_all(query.into())
