@@ -77,6 +77,21 @@ pub async fn change_role(
     Ok(StatusCode::OK)
 }
 
+#[cfg_attr(
+    debug_assertions,
+    utoipa::path(get, path="/api/v1/users/me",
+        responses(
+            (status = 200, description = "現在ログイン中のユーザー情報の取得に成功した場合。")
+        )
+    )
+)]
+#[tracing::instrument(
+    skip(user),
+    fields(
+        user_id = %user.user.id.to_string(),
+        user_name = %user.user.name
+    )
+)]
 pub async fn get_current_user(user: AuthorizedUser) -> Json<UserResponse> {
     Json(UserResponse::from(user.user))
 }

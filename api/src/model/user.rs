@@ -10,6 +10,7 @@ use kernel::model::{
 };
 use serde::{Deserialize, Serialize};
 use strum::VariantNames;
+use utoipa::ToSchema;
 
 #[derive(Serialize, Deserialize, VariantNames)]
 #[strum(serialize_all = "kebab-case")]
@@ -142,6 +143,7 @@ impl From<UpdateUserRoleRequestWithUserId> for UpdateUserRole {
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
+#[cfg_attr(debug_assertions, derive(ToSchema))]
 pub struct BookOwner {
     pub id: UserId,
     pub name: String,
@@ -156,6 +158,7 @@ impl From<kernel::model::user::BookOwner> for BookOwner {
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
+#[cfg_attr(debug_assertions, derive(ToSchema))]
 pub struct CheckoutUser {
     pub id: UserId,
     pub name: String,

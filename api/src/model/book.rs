@@ -10,11 +10,13 @@ use kernel::model::{
     list::PaginatedList,
 };
 use serde::{Deserialize, Serialize};
+use utoipa::ToSchema;
 
 use super::user::{BookOwner, CheckoutUser};
 
 #[derive(Debug, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
+#[cfg_attr(debug_assertions, derive(ToSchema))]
 pub struct CreateBookRequest {
     #[garde(length(min = 1))]
     pub title: String,
@@ -45,6 +47,7 @@ impl From<CreateBookRequest> for CreateBook {
 
 #[derive(Debug, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
+#[cfg_attr(debug_assertions, derive(ToSchema))]
 pub struct UpdateBookRequest {
     #[garde(length(min = 1))]
     pub title: String,
@@ -84,6 +87,7 @@ impl From<UpdateBookRequestWithIds> for UpdateBook {
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
+#[cfg_attr(debug_assertions, derive(ToSchema))]
 pub struct BookResponse {
     pub id: BookId,
     pub title: String,
@@ -140,6 +144,7 @@ impl From<BookListQuery> for BookListOptions {
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
+#[cfg_attr(debug_assertions, derive(ToSchema))]
 pub struct PaginatedBookResponse {
     pub total: i64,
     pub limit: i64,
@@ -166,6 +171,7 @@ impl From<PaginatedList<Book>> for PaginatedBookResponse {
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
+#[cfg_attr(debug_assertions, derive(ToSchema))]
 pub struct BookCheckoutResponse {
     pub id: CheckoutId,
     pub checked_out_by: CheckoutUser,
